@@ -1,8 +1,12 @@
+using Demo.Infrastructure.EntityFramework.Extensions;
+using Demo.Infrastructure.EntityFramework.Repository;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
@@ -44,6 +48,18 @@ app.MapGet("/weatherforecast",
                return Results.Ok(forecast);
            })
    .WithName("GetWeatherForecast");
+
+
+app.MapGet("/users",
+           async ( IApplicationRepository repository) =>
+           {
+               var users = await repository.GetUsersAsync();
+               return Results.Ok(users);
+           });
+
+app.MapGet("/Tasks",
+           () => Results.Ok("Hello World!"));
+
 
 app.Run();
 
